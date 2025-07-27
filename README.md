@@ -7,21 +7,35 @@ The certbot utility runs from a Docker Container and is employed to get the Let'
 
 ## Installation
 
-1. In *./http/default.conf* and *./https/default.conf* set your domain(s) and the proxied servers. For a clean install delete the *./certbot/* directory.
+Clone this repository to your local computer:
 
-2. Launch the Docker Containers; at this point, only the http server will run, as the https server does not yet have a certificate:
+```bash
+git clone https://github.com/contaware/docker-revproxy-certbot.git
+```
+
+
+## Configuration 
+
+In *./http/default.conf* and *./https/default.conf* set your domain(s) and the proxied servers.
+
+To start cleanly, delete the *./certbot/* directory if it already exists.
+
+
+## Get Certificate
+
+1. Launch the Docker Containers; at this point, only the http server will run, as the https server does not yet have a certificate:
 
    ```bash
    docker compose up -d
    ```
 
-3. Make sure that your Docker Host is accessible from the outside through port **80** and run a certbot test:
+2. Make sure that your Docker Host is accessible from the outside through port **80** and run a certbot test:
 
    ```bash
    docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot --dry-run --cert-name mycerts -d app1.example.com -d app2.example.com
    ```
 
-4. If successful, issue your certificate without the `--dry-run` option:
+3. If successful, issue your certificate without the `--dry-run` option:
 
    ```bash
    docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot --cert-name mycerts -d app1.example.com -d app2.example.com
@@ -34,15 +48,18 @@ The certbot utility runs from a Docker Container and is employed to get the Let'
    /etc/letsencrypt/live/mycerts/privkey.pem
    ```
 
-5. Make sure that your Docker Host is accessible from the outside through port **443** and restart the Docker Containers; this time the https server should start:
 
-   ```bash
-   docker compose down
-   docker compose up -d
-   ```
+## Run Reverse Proxy
+
+Make sure that your Docker Host is accessible from the outside through port **443** and restart the Docker Containers; if the certificate has been issued correctly, the https server should start:
+
+```bash
+docker compose down
+docker compose up -d
+```
 
 
-## Renew
+## Renew Certificate
 
 Remember to renew the certificate every 3 month:
 
