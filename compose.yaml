@@ -1,0 +1,21 @@
+services:
+  http:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./http/:/etc/nginx/conf.d/:ro
+      - ./certbot/www/:/var/www/certbot/:ro
+  https:
+    image: nginx
+    ports:
+      - "443:443"
+    volumes:
+      - ./https/:/etc/nginx/conf.d/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/data/:/var/lib/letsencrypt/:rw
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
